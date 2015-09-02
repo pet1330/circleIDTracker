@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <arg name="image_input_topic" default="/usb_cam/image_raw" />
+    <arg name="image_output_topic" default="/circle_detection/output" />
+    <arg name="camera_info" default="/usb_cam/camera_info" />
+    <arg name="results_topic" default="/circle_detection/results_array" />
+    <arg name="marker_topic" default="/circle_detection/marker_array" />
+    
+    <arg name="target_frame" default="/base" />
+    <arg name="machine" default="localhost" />
+    <arg name="user" default="" />
+
+    <!-- start circle detection -->
+    <node name="CircleFinder" pkg="circle_detection" type="circle_finder" required="true" output="screen">
+        <param name="image_input_topic" type="str"  value="$(arg image_input_topic)" />
+        <param name="image_output_topic" type="str"  value="$(arg image_output_topic)" />
+        <param name="results_topic" type="str"  value="$(arg results_topic)" />
+        <param name="marker_topic" type="str"  value="$(arg marker_topic)" />
+        <param name="camera_info" type="str"  value="$(arg camera_info)" />
+    </node>
+
+    <!-- view procesed image from circle finder & original input image -->
+    <node name="view_original" pkg="image_view" type="image_view" required="false">
+        <remap from="image" to="$(arg image_input_topic)"/>
+    </node>
+    <node name="view_processed" pkg="image_view" type="image_view" required="false">
+        <remap from="image" to="$(arg image_output_topic)"/>
+    </node>
+
+</launch>
